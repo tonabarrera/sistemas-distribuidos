@@ -1,5 +1,5 @@
 run: asteroides
-	./asteroides
+	./asteroides $(numero)
 asteroides: gfx.o asteroides.o
 	g++ gfx.o asteroides.o -o asteroides -lX11 -lm
 gfx.o: gfx.c

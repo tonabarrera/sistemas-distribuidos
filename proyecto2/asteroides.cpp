@@ -43,11 +43,17 @@ public:
 
     Asteroide(int numero, int x, int y, double radio_asteroide){
         num_lados = numero;
-        angulo = 360.0/num_lados;
         centro[0] = x;
         centro[1] = y;
         radio = radio_asteroide;
 
+        calcular_variables();
+
+        inicializar_matriz_rotacion();
+    }
+
+    void calcular_variables(void) {
+        angulo = 360.0/num_lados;
         vectores.resize(num_lados);
         vertices.resize(num_lados);
         for (int i = 0; i < num_lados; i++){
@@ -69,8 +75,19 @@ public:
         vel_angular = (-0.21*radio) + 22.14;
         if (rand() % 2)
             vel_angular *= -1;
+    }
 
-        inicializar_matriz_rotacion();
+    void set_centro(int x, int y) {
+        centro[0] = x;
+        centro[1] = y;
+    }
+
+    void set_radio(int r) {
+        radio = r;
+    }
+
+    void set_lados(int l) {
+        num_lados = l;
     }
 
     void inicializar_matriz_rotacion(void) {
@@ -218,9 +235,14 @@ public:
         return;
     }
 
-    void mover(void) {
+    bool mover(void) {
         centro[0] += direccion[0];
         centro[1] += direccion[1];
+
+        if (centro[0]>LARGO_VENTANA+100 || centro[0]<-100 || centro[1]<-100 || centro[1]>ANCHO_VENTANA+100) {
+            cout << "DESTRUIR" << endl;
+            return true;
+        }
 
         for (int i = 0; i < num_lados; i++) {
             vertices[i][0] += direccion[0];
@@ -229,66 +251,93 @@ public:
 
         dibujar();
 
-        return;
+        return false;
     }
 };
 
-int main(int argc, char const *argv[]) {
-    srand (time(NULL));
-    gfx_open(LARGO_VENTANA, ANCHO_VENTANA, "Animacion de asteroides");
-    gfx_color(0, 200, 100);
-    gfx_clear();
 
-    vector<Asteroide> asteroides;
-
-    asteroides.reserve(5);
-
+class Controlador {
+private:
+    int numero;
     int radio_random = 10;
     int posicion_x = 0;
     int posicion_y = 0;
     int lados = 5;
+    vector<Asteroide> asteroides;
 
+    void llenar_vector(void) {
+        for (int i = 0; i < numero; ++i){
+            generar_valores();
+            Asteroide aux(lados, posicion_x, posicion_y, radio_random);
+            asteroides.push_back(aux);
+            asteroides[i].calcular_coordenadas();
+            asteroides[i].dibujar();
+        }
 
-    for (int i = 0; i < 5; ++i){
+        gfx_flush();
+        usleep(50000);
+        return;
+    }
+
+    void generar_valores(void) {
         radio_random = rand() % (RADIO_MAXIMO-RADIO_MINIMO + 1) + RADIO_MINIMO;
         lados = rand() % 3 + 5;
         posicion_y = rand() % (ANCHO_VENTANA-50 + 1) + 50;
         posicion_x = rand() % (LARGO_VENTANA-50 + 1) + 50;
-        Asteroide aux(lados, posicion_x, posicion_y, radio_random);
-        asteroides.push_back(aux);
-        asteroides[i].calcular_coordenadas();
-        asteroides[i].dibujar();
+
+        return;
     }
 
-    gfx_flush();
-    usleep(50000);
-    for(int t = 0; t < 40; t++){
+public:
+    Controlador(int num) {
+        numero = num;
+        asteroides.reserve(numero);
+        srand (time(NULL));
+        gfx_open(LARGO_VENTANA, ANCHO_VENTANA, "Animacion de asteroides");
+        gfx_color(0, 200, 100);
         gfx_clear();
-        asteroides[0].mover();
-        asteroides[1].mover();
-        asteroides[2].mover();
-        asteroides[3].mover();
-        asteroides[4].mover();
-
-        gfx_clear();
-        asteroides[0].rotar();
-        asteroides[1].rotar();
-        asteroides[2].rotar();
-        asteroides[3].rotar();
-        asteroides[4].rotar();
-
-        gfx_flush();
-        usleep(50000); //24 por segundo
     }
-    /*
-    char c;
-    while(1) {
-        // Wait for the user to press a character.
-        c = gfx_wait();
-        gfx_flush();
-        // Quit if it is the letter q.
-        if(c == 'q') break;
+
+    void iniciar_animacion() {
+        llenar_vector();
+
+        while(1) {
+            gfx_clear();
+            for (int i = 0; i < numero; i++) {
+                if (asteroides[i].mover()) {
+                    gfx_clear();
+                    generar_valores();
+                    asteroides[i].set_centro(posicion_x, posicion_y);
+                    asteroides[i].set_radio(radio_random);
+                    asteroides[i].set_lados(lados);
+                    asteroides[i].calcular_variables();
+                    asteroides[i].inicializar_matriz_rotacion();
+                    asteroides[i].calcular_coordenadas();
+                    gfx_clear();
+                    gfx_flush();
+                    gfx_clear();
+                }
+            }
+            gfx_clear();
+            usleep(1);
+            for (int i = 0; i < numero; i++)
+                asteroides[i].rotar();
+
+            gfx_flush();
+            usleep(50000);
+            if(gfx_event_waiting()) break;
+        }
     }
-    */
+};
+
+int main(int argc, char const *argv[]) {
+    if (argc < 2){
+        cout << "Olvidaste poner el numero de asteroides" << endl;
+        return 0;
+    }
+
+    Controlador controlador(atoi(argv[1]));
+    controlador.iniciar_animacion();
+    
     return 0;
 }
