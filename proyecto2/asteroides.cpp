@@ -209,9 +209,26 @@ private:
     void generar_valores(void) {
         radio_random = rand() % (RADIO_MAXIMO - RADIO_MINIMO + 1) + RADIO_MINIMO;
         lados = rand() % (MAX_NUM_LADOS - MIN_NUM_LADOS + 1) + MIN_NUM_LADOS;
-        posicion_y = rand() % (ANCHO_VENTANA-5 + 1) + 5;
-        posicion_x = rand() % (LARGO_VENTANA-5 + 1) + 5;
-
+        if (rand() % 2) {
+            posicion_y = rand() % (ANCHO_VENTANA - 5 + 1) + 5;
+            if (posicion_y > 50 || posicion_y < (ANCHO_VENTANA-50))
+                if (rand() % 2)
+                    posicion_x = 0;
+                else
+                    posicion_x = LARGO_VENTANA;
+            else
+                posicion_x = rand() % (LARGO_VENTANA-5 + 1) + 5;
+        } else {
+            posicion_x = rand() % (LARGO_VENTANA-5 + 1) + 5;
+            if (posicion_x > 50 || posicion_x < (LARGO_VENTANA-50))
+                if (rand() % 2)
+                    posicion_y = 0;
+                else
+                    posicion_y = ANCHO_VENTANA;
+            else
+                posicion_y = rand() % (ANCHO_VENTANA - 5 + 1) + 5;
+        }
+        
         return;
     }
 
