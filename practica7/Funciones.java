@@ -2,7 +2,7 @@ public class Funciones {
     public static void main(String[] args) {
         if (args.length < 1){
             System.out.println("Olvidaste ingresar un valor");
-        return;
+            return;
         }
         double i = 1;
         double seno = 0;
@@ -23,6 +23,7 @@ public class Funciones {
         }
         long stopTime = System.nanoTime();
         long elapsedTime = stopTime - startTime;
-        System.out.println("max: " + max + " tiempo: " + elapsedTime + " ns");
+        double segundos = elapsedTime / 1000000000f;
+        System.out.println("max: " + max + " tiempo: " + segundos + " s");
     }
 }

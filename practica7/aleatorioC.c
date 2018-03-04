@@ -16,25 +16,25 @@ int main(int argc, char const *argv[]) {
     unsigned long N = atol(argv[1]);
     int tam = sizeof(char)*5;
     char *palabra = (char*) malloc(sizeof(char)*4);
+    palabra[3] = ' ';
     char *cadenota = NULL;
     int cantidad = 0;
     start = clock();
-    for (unsigned long i = 0; i < N; i++) {
-        cadenota = (char*) realloc(cadenota, tam*(i+1));
+    for (unsigned long i = 1; i <= N; i++) {
+        cadenota = (char*) realloc(cadenota, tam*i);
         palabra[0] = rand() % 25 + 65;
         palabra[1] = rand() % 25 + 65;
         palabra[2] = rand() % 25 + 65;
-        palabra[3] = ' ';
-        strcat(cadenota, palabra);
+        memcpy(cadenota+(4*(i-1)), palabra, 5);
     }
     cadenota2 = cadenota;
     while ((cadenota = strstr(cadenota, "IPN")) != NULL){
         cantidad++;
-        cadenota = cadenota+3;
+        cadenota += 4;
     }
     end = clock();
     cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
-    printf("%s %f\n", cadenota2, cpu_time_used);
+    printf("Tiempo %f s\n", cpu_time_used);
     printf("N=%lu IPN encontrados=%d\n", N, cantidad);
     return 0;
 }

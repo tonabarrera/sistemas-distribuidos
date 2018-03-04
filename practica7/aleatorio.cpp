@@ -23,18 +23,17 @@ int main(int argc, char const *argv[]) {
         palabra[0] = rand() % 25 + 65;
         palabra[1] = rand() % 25 + 65;
         palabra[2] = rand() % 25 + 65;
-        palabra[3] = ' ';
         cadenota.append(palabra);
     }
     size_t pos = 0;
     while ((pos = cadenota.find("IPN", pos)) != string::npos){
         cantidad++;
-        pos += 3;
+        pos += 4;
     }
     
     end = clock();
     cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
-    cout << cadenota << " " << cpu_time_used << endl;
+    cout << "Tiempo " << cpu_time_used <<  " s" <<endl;
     cout << "N=" << N << " IPN encontrados= " << cantidad << endl;
     return 0;
 }
