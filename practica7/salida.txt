@@ -1,2 +1,0 @@
-tiempo: 2186372944 ns
-N=17576000Numero de IPN: 970
