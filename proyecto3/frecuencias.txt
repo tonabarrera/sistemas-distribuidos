@@ -1,0 +1,9 @@
+Inicio
+.. taken by thread #1
+archivo3.txt taken by thread #1
+archivo1.txt taken by thread #0
+. taken by thread #2
+archivo2.txt taken by thread #2
+que 5885
+de 3038
+de 6856
