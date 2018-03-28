@@ -11,7 +11,7 @@
 #include <future>
 using namespace std;
 
-#define NUM_HILOS 5
+#define NUM_HILOS 8
 
 DIR *dip;
 mutex m;

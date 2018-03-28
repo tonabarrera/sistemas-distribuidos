@@ -1,9 +1,19 @@
-Inicio
-.. taken by thread #1
-archivo3.txt taken by thread #1
-archivo1.txt taken by thread #0
-. taken by thread #2
-archivo2.txt taken by thread #2
-que 5885
-de 3038
-de 6856
+5622
+6856
+3038
+6843
+7648
+2671
+2335
+4618
+4236
+2628
+8581
+7687
+6254
+4578
+4653
+7111
+
+
+ENCONTRADOS 85354
