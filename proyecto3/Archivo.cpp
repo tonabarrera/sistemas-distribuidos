@@ -31,7 +31,7 @@ size_t Archivo::escribe(void *buffer, size_t nbytes) {
     return bytes;
 }
 
-size_t Archivo::obtiene_num_bytes() {
+size_t Archivo::get_num_bytes() {
     return num_bytes;
 }
 

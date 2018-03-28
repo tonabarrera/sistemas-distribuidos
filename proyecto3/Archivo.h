@@ -20,7 +20,7 @@ public:
     Archivo(string filename, int banderas, mode_t modo);
     size_t lee(size_t nbytes);
     size_t escribe(void *buffer, size_t nbytes);
-    size_t obtiene_num_bytes();
+    size_t get_num_bytes();
     const char *get_contenido();
     ~Archivo();
 };
