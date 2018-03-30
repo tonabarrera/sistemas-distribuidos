@@ -1,5 +1,4 @@
 #include "Archivo.h"
-#include "Semaforo.h"
 #include <thread>
 #include <mutex>
 #include <iostream>
@@ -34,13 +33,18 @@ void funcion(int i, promise<list<struct Nodo>> *promObj) {
     size_t nbytes = 0;
     string palabra;
     list<struct Nodo> lista_palabras;
-    while ((dit = readdir(dip)) != NULL) {
-        m.lock();
+    m.lock();
+    dit = readdir(dip);
+    m.unlock();
+    while (dit != NULL) {
         nombre = dit->d_name;
-        cout << nombre << " "<< nombre_hilo << endl;
+        m.lock();
+        dit = readdir(dip);
         m.unlock();
-        if (!nombre.compare(".") or !nombre.compare(".."))
+        cout << nombre << " "<< nombre_hilo << endl;
+        if (!nombre.compare(".") or !nombre.compare("..")){
             continue;
+        }
 
         nbytes = 0;
         nombre = "./archivos/" + nombre;
@@ -60,7 +64,7 @@ void funcion(int i, promise<list<struct Nodo>> *promObj) {
                 }
                 transform(palabra.begin(), palabra.end(), palabra.begin(), ::tolower);
                 for (it = lista_palabras.begin(); it != lista_palabras.end(); it++) {
-                    if (it->palabra == palabra) {
+                    if (!(it->palabra.compare(palabra))) {
                         it->frecuencia += 1;
                         break;
                     }
@@ -75,7 +79,9 @@ void funcion(int i, promise<list<struct Nodo>> *promObj) {
             }
         }
         lista_palabras.sort(comparar_frecuencias);
-        lista_palabras.resize(500);
+        
+        if (lista_palabras.size()>10000)
+            lista_palabras.resize(10000);
     }
     if (lista_palabras.size() < 1) {
         struct Nodo aux;
@@ -107,11 +113,38 @@ int main(int argc, char const *argv[]) {
         return -1;
 
     list<struct Nodo>::iterator it;
+    list<struct Nodo>::iterator it2;
+    list<struct Nodo> lista_final;
+    list<struct Nodo> resultados[NUM_HILOS];
+
     for (int i = 0; i < NUM_HILOS; i++){
-        it = futureObj[i].get().begin();
-        cout << it->palabra << " " << it->frecuencia << endl;
+        resultados[i] = futureObj[i].get();
     }
-    
+    for (int i = 0; i < NUM_HILOS; i++) {
+        cout << "Num de elementos: " << resultados[i].size() << endl;
+        for (it = resultados[i].begin(); it != resultados[i].end(); it++) {
+            for (it2 = lista_final.begin(); it2 != lista_final.end(); it2++) {
+                if (it2->palabra.compare(it->palabra) == 0) {
+                    it2->frecuencia += it->frecuencia;
+                    break;
+                }
+            }
+            if (it2 == lista_final.end()) {
+                struct Nodo temporal;
+                temporal.palabra = it->palabra;
+                temporal.frecuencia = it->frecuencia;
+                lista_final.push_back(temporal);
+            }
+        }
+        lista_final.sort(comparar_frecuencias);
+    }
+
+    cout << "Tamaño: " << lista_final.size() << endl;
+    lista_final.resize(500);
+    int con = 1;
+    for (it = lista_final.begin(); it != lista_final.end(); it++) {
+        cout << con++ << ".-" << it->palabra << " -- " << it->frecuencia << endl;
+    }
     /*
     int k = 1;
     list<struct Nodo>::iterator it;
