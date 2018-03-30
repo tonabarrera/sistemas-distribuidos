@@ -8,25 +8,27 @@
 #include <regex>
 #include <algorithm>
 #include <future>
+
 using namespace std;
 
-#define NUM_HILOS 8
+struct Nodo {
+    string palabra;
+    unsigned int frecuencia;
+};
 
 DIR *dip;
 mutex m;
-struct Nodo {
-    string palabra;
-    int frecuencia;
-};
 
 bool comparar_frecuencias(const struct Nodo a, const struct Nodo b) {
     if (a.frecuencia > b.frecuencia)
         return true;
     return false;
 }
-void funcion(int i, promise<list<struct Nodo>> *promObj) {
-    string nombre_hilo = "taken by thread #" + to_string(i);
+
+void funcion(const char *carpeta, promise<list<struct Nodo>> *promObj) {
     struct dirent *dit;
+    struct Nodo auxiliar;
+    auxiliar.frecuencia = 1;
     string nombre;
     regex regex_palabra("[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ]+");
     list<struct Nodo>::iterator it;
@@ -41,13 +43,12 @@ void funcion(int i, promise<list<struct Nodo>> *promObj) {
         m.lock();
         dit = readdir(dip);
         m.unlock();
-        cout << nombre << " "<< nombre_hilo << endl;
-        if (!nombre.compare(".") or !nombre.compare("..")){
+        if (!nombre.compare(".") or !nombre.compare(".."))
             continue;
-        }
 
         nbytes = 0;
-        nombre = "./archivos/" + nombre;
+        nombre = "/" + nombre;
+        nombre = carpeta + nombre;
         Archivo original(nombre);
         
         while((nbytes = original.lee(BUFSIZ)) > 0);
@@ -57,7 +58,7 @@ void funcion(int i, promise<list<struct Nodo>> *promObj) {
         while (nbytes < original.get_num_bytes()) {
             palabra.append(1, original.get_contenido()[nbytes++]);
             if (!regex_match(palabra, regex_palabra)) {
-                palabra = palabra.substr(0, palabra.size()-1);
+                palabra = palabra.substr(0, palabra.size() - 1);
                 if (palabra.size() < 1) {
                     palabra = "";
                     continue;
@@ -70,9 +71,7 @@ void funcion(int i, promise<list<struct Nodo>> *promObj) {
                     }
                 }
                 if (it == lista_palabras.end()) {
-                    struct Nodo auxiliar;
                     auxiliar.palabra = palabra;
-                    auxiliar.frecuencia = 1;
                     lista_palabras.push_back(auxiliar);
                 }
                 palabra = "";
@@ -80,33 +79,46 @@ void funcion(int i, promise<list<struct Nodo>> *promObj) {
         }
         lista_palabras.sort(comparar_frecuencias);
         
-        if (lista_palabras.size()>10000)
+        if (lista_palabras.size() > 10000)
             lista_palabras.resize(10000);
     }
     if (lista_palabras.size() < 1) {
-        struct Nodo aux;
-        aux.palabra = "NADA";
-        aux.frecuencia = 0;
-        lista_palabras.push_back(aux);
+        auxiliar.palabra = "NADA";
+        auxiliar.frecuencia = 0;
+        lista_palabras.push_back(auxiliar);
     }
     promObj->set_value(lista_palabras);
 }
 
 int main(int argc, char const *argv[]) {
-    printf("%s\n", "Inicio");
-    promise<list<struct Nodo>> promiseObj[NUM_HILOS];
-    future<list<struct Nodo>> futureObj[NUM_HILOS];
-    for (int i = 0; i < NUM_HILOS; i++)
-        futureObj[i] = promiseObj[i].get_future(); 
-    thread hilos[NUM_HILOS];
-
-    if ((dip = opendir("archivos")) == NULL)
+    if (argc < 3) {
+        printf("%s\n", "Faltan parametros");
+        printf("%s\n", "./principal <numero-hilos> <nombre carpeta>");
         return -1;
+    }
+    short numero_hilos = atoi(argv[1]);
+    if (numero_hilos > 8) {
+        printf("%s\n", "El numero máximo de hilos es 8");
+        return -1;
+    }
 
-    for (int i = 0; i < NUM_HILOS; ++i)
-        hilos[i] = thread(funcion, i, &promiseObj[i]);
+    promise<list<struct Nodo>> promiseObj[numero_hilos];
+    future<list<struct Nodo>> futureObj[numero_hilos];
+    thread hilos[numero_hilos];
+    unsigned short i = 0;
+    
+    for (i = 0; i < numero_hilos; i++)
+        futureObj[i] = promiseObj[i].get_future(); 
 
-    for (int i = 0; i < NUM_HILOS; ++i)
+    if ((dip = opendir(argv[2])) == NULL){
+        printf("%s %s\n", "Error al abrir la carpeta:", argv[2]);
+        return -1;
+    }
+
+    for (i = 0; i < numero_hilos; i++)
+        hilos[i] = thread(funcion, argv[2], &promiseObj[i]);
+
+    for (i = 0; i < numero_hilos; i++)
         hilos[i].join();
 
     if (closedir(dip) == -1)
@@ -115,13 +127,12 @@ int main(int argc, char const *argv[]) {
     list<struct Nodo>::iterator it;
     list<struct Nodo>::iterator it2;
     list<struct Nodo> lista_final;
-    list<struct Nodo> resultados[NUM_HILOS];
+    list<struct Nodo> resultados[numero_hilos];
 
-    for (int i = 0; i < NUM_HILOS; i++){
+    for (i = 0; i < numero_hilos; i++)
         resultados[i] = futureObj[i].get();
-    }
-    for (int i = 0; i < NUM_HILOS; i++) {
-        cout << "Num de elementos: " << resultados[i].size() << endl;
+
+    for (i = 0; i < numero_hilos; i++) {
         for (it = resultados[i].begin(); it != resultados[i].end(); it++) {
             for (it2 = lista_final.begin(); it2 != lista_final.end(); it2++) {
                 if (it2->palabra.compare(it->palabra) == 0) {
@@ -129,27 +140,16 @@ int main(int argc, char const *argv[]) {
                     break;
                 }
             }
-            if (it2 == lista_final.end()) {
-                struct Nodo temporal;
-                temporal.palabra = it->palabra;
-                temporal.frecuencia = it->frecuencia;
-                lista_final.push_back(temporal);
-            }
+            if (it2 == lista_final.end())
+                lista_final.push_back(*it);
         }
         lista_final.sort(comparar_frecuencias);
     }
 
-    cout << "Tamaño: " << lista_final.size() << endl;
     lista_final.resize(500);
-    int con = 1;
-    for (it = lista_final.begin(); it != lista_final.end(); it++) {
-        cout << con++ << ".-" << it->palabra << " -- " << it->frecuencia << endl;
-    }
-    /*
-    int k = 1;
-    list<struct Nodo>::iterator it;
-    for (it = lista_palabras.begin(); it != lista_palabras.end(); it++)
-        cout << k++ << ".-"<< it->palabra << " - " << it->frecuencia << endl;
-    */
+    i = 1;
+    for (it = lista_final.begin(); it != lista_final.end(); it++)
+        cout << i++ << ".-" << it->palabra << " -- " << it->frecuencia << endl;
+    
     return 0;
 }
