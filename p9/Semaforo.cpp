@@ -2,7 +2,6 @@
 
 #include <mutex>
 #include <condition_variable>
-#include "Semaforo.h"
 using namespace std;
 
 Semaforo::Semaforo(unsigned long c){

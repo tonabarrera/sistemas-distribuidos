@@ -1,3 +1,84 @@
+// Archivo.h
+#ifndef __ARCHIVO__
+#define __ARCHIVO__
+
+#include <string>
+#include <stdlib.h>
+#include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
+
+using namespace std;
+
+class Archivo {
+private:
+    string nombre_archivo;
+    int fd;
+    char *contenido;
+    size_t num_bytes;
+public:
+    Archivo(string filename);
+    Archivo(string filename, int banderas, mode_t modo);
+    size_t lee(size_t nbytes);
+    size_t escribe(void *buffer, size_t nbytes);
+    size_t get_num_bytes();
+    const char *get_contenido();
+    ~Archivo();
+};
+
+#endif
+
+----------------------------------------------------------------------------------------------------
+// Archivo.cpp
+#include "Archivo.h"
+
+Archivo::Archivo(string filename) {
+    num_bytes = 0;
+    nombre_archivo = filename;
+    fd = open(nombre_archivo.c_str(), O_RDONLY);
+
+    if (fd < 1)
+        printf("-- %s %s--\n", "ERROR AL ABRIR", nombre_archivo.c_str());
+}
+
+Archivo::Archivo(string filename, int banderas, mode_t modo) {
+    num_bytes = 0;
+    nombre_archivo = filename;
+    fd = open(nombre_archivo.c_str(), banderas, modo);
+
+    if (fd < 1)
+        printf("-- %s %s--\n", "ERROR AL ABRIR", nombre_archivo.c_str());
+}
+
+size_t Archivo::lee(size_t nbytes) {
+    // printf("-- %s %ld %d --\n", "LEYENDO", nbytes, num_bytes);
+    contenido = (char*) realloc(contenido, num_bytes+nbytes);
+    size_t n = read(fd, contenido+num_bytes, nbytes);
+    num_bytes += n;
+    return n;
+}
+
+size_t Archivo::escribe(void *buffer, size_t nbytes) {
+    size_t bytes = write(fd, buffer, nbytes);
+    return bytes;
+}
+
+size_t Archivo::get_num_bytes() {
+    return num_bytes;
+}
+
+const char* Archivo::get_contenido() {
+    return contenido;
+}
+
+Archivo::~Archivo() {
+    close(fd);
+    free(contenido);
+    contenido = NULL;
+}
+
+----------------------------------------------------------------------------------------------------
+// principal.cpp
 #include "Archivo.h"
 #include <thread>
 #include <mutex>
@@ -153,3 +234,15 @@ int main(int argc, char const *argv[]) {
     
     return 0;
 }
+
+----------------------------------------------------------------------------------------------------
+Makefile
+
+principal: Archivo.o principal.o
+    g++ -std=c++11 -lpthread Archivo.o principal.o -o principal
+Archivo.o: Archivo.cpp
+    g++ -Wall -c Archivo.cpp
+principal.o: principal.cpp
+    g++ -Wall -c principal.cpp
+clean:
+    rm *.o ./principal
