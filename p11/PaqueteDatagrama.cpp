@@ -5,16 +5,12 @@ PaqueteDatagrama::PaqueteDatagrama(char *cadena, unsigned int longi, char *dir, 
 	datos=new char[longi];
 	memcpy(datos, cadena, sizeof(char)*longi);
 	memcpy(ip, dir, sizeof(char)*16);
-	longitud=longi;
-	puerto=port;
+	longitud = longi;
+	puerto = port;
 }
-
 PaqueteDatagrama::PaqueteDatagrama(unsigned int num){
 	datos = new char[num];
 	longitud = num;
-	for(unsigned int i=0; i<num; i++){
-		datos[i] = ' ';
-	}
 }
 
 PaqueteDatagrama::~PaqueteDatagrama(){
@@ -35,10 +31,9 @@ char *PaqueteDatagrama::obtieneDatos(){
 	return datos;
 }
 void PaqueteDatagrama::inicializaPuerto(int port){
-	puerto=port;
+	puerto = port;
 }
 void PaqueteDatagrama::inicializaIp(char *dir){
-	printf("%s\n", dir);
     memcpy(ip, dir, sizeof(char)*16);
 }
 void PaqueteDatagrama::inicializaDatos(char *data){

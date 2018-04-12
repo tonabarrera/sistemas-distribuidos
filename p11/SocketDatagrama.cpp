@@ -23,13 +23,12 @@ int SocketDatagrama::envia(PaqueteDatagrama &p) {
 
 int SocketDatagrama::recibe(PaqueteDatagrama &p) {
     char datos[p.obtieneLongitud()];
-    char aux[4];
+    char aux[INET_ADDRSTRLEN];
 
     socklen_t clilen = sizeof(direccionForanea);
     int i = recvfrom(s, datos, p.obtieneLongitud(), 0, (struct sockaddr *) &direccionForanea, &clilen);
-    memcpy(aux, &direccionForanea.sin_addr.s_addr, 4);
-    printf("DIR: %d\n", direccionForanea.sin_addr.s_addr);
-    p.inicializaPuerto(direccionForanea.sin_port);
+    inet_ntop(AF_INET, &(direccionForanea.sin_addr), aux, INET_ADDRSTRLEN);
+    p.inicializaPuerto(ntohs(direccionForanea.sin_port));
     p.inicializaIp(aux);
     p.inicializaDatos(datos);
     return i;

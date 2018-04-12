@@ -8,9 +8,8 @@ int main(int argc, char const *argv[]) {
     while(1) {
         printf("%s\n", "ESPERANDO...");
         cliente.recibe(paquete);
+        printf("Mensaje de: %s:%d\n", paquete.obtieneDireccion(), paquete.obtienePuerto());
         printf("Mensaje recibido: %s\n", paquete.obtieneDatos());
-        printf("Puerto: %d\n", paquete.obtienePuerto());
-        printf("Direccion: %d.%d.%d.%d\n", paquete.obtieneDireccion()[0], paquete.obtieneDireccion()[1], paquete.obtieneDireccion()[2], paquete.obtieneDireccion()[3]);
         printf("%s\n", "RECIBIDO");
     }
 

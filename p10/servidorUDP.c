@@ -8,7 +8,7 @@
 int puerto = 7200;
 
 int main(int argc, char const *argv[]) {
-    int num[511];
+    int num[2];
     int s, res, clilen;
     struct sockaddr_in server_addr, msg_to_client_addr;
     
@@ -23,11 +23,12 @@ int main(int argc, char const *argv[]) {
     clilen = sizeof(msg_to_client_addr);
     char aux[4];
     while (1) {
-        recvfrom(s, (char *) num, 511*sizeof(int), 0, (struct sockaddr *) &msg_to_client_addr, &clilen);
+        recvfrom(s, (char *) num, 2*sizeof(int), 0, (struct sockaddr *) &msg_to_client_addr, &clilen);
         memcpy(aux, &msg_to_client_addr.sin_addr.s_addr, 4);
         printf("IP: %d.%d.%d.%d\n", aux[0], aux[1], aux[2], aux[3]);
         printf("Puerto: %d\n", ntohs(msg_to_client_addr.sin_port));
         res = num[0] + num[1];
+        printf("La suma: %d\n", res);
 
         /* Envia la peticion al cliente. La estructura msg_to_client_addr contiene la direccion
         *  socket del cliente
