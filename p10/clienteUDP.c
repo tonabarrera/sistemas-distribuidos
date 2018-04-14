@@ -31,21 +31,21 @@ int main(int argc, char const *argv[]){
 
     bind(s, (struct sockaddr *)&client_addr, sizeof(client_addr));
 
-    num[0] = 70;
-    num[1] = 71; /* rellena el mensaje */
+    num[0] = 254;
+    num[1] = 90; /* rellena el mensaje */
     printf("Mi puerto %d\n", ntohs(client_addr.sin_port));
     sendto(s, (char *)num, 2*sizeof(int), 0, (struct sockaddr *)&msg_to_server_addr, sizeof(msg_to_server_addr));
 
     /* se bloquea esperando respuesta */
-    /*
+    
     recvfrom(s, (char *)&res, sizeof(int), 0, NULL, NULL);
     memcpy(aux, &msg_to_server_addr.sin_addr.s_addr, 4);
     printf("IP: %d.%d.%d.%d\n", aux[0], aux[1], aux[2], aux[3]);
     printf("Puerto: %d\n", ntohs(msg_to_server_addr.sin_port));
-        printf("2 + 5 = %d\n", res);
-    for(int i = 0; i < 4; i++)
-        printf("%d\n", aux[i]);
-*/
+    printf("%d + %d = %d\n",num[0], num[1], res);
+    //for(int i = 0; i < 4; i++)
+    //    printf("%d\n", aux[i]);
+
     close(s);
 
     return 0;
