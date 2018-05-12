@@ -17,6 +17,7 @@ extern "C" {
 struct Operandos {
 	int i;
 	int j;
+	double res;
 };
 typedef struct Operandos Operandos;
 
@@ -25,26 +26,26 @@ typedef struct Operandos Operandos;
 
 #if defined(__STDC__) || defined(__cplusplus)
 #define SUMA 1
-extern  double * suma_1(struct Operandos *, CLIENT *);
-extern  double * suma_1_svc(struct Operandos *, struct svc_req *);
+extern  struct Operandos * suma_1(struct Operandos *, CLIENT *);
+extern  struct Operandos * suma_1_svc(struct Operandos *, struct svc_req *);
 #define PRODUCTO 2
-extern  double * producto_1(struct Operandos *, CLIENT *);
-extern  double * producto_1_svc(struct Operandos *, struct svc_req *);
+extern  struct Operandos * producto_1(struct Operandos *, CLIENT *);
+extern  struct Operandos * producto_1_svc(struct Operandos *, struct svc_req *);
 #define COCIENTE 3
-extern  double * cociente_1(struct Operandos *, CLIENT *);
-extern  double * cociente_1_svc(struct Operandos *, struct svc_req *);
+extern  struct Operandos * cociente_1(struct Operandos *, CLIENT *);
+extern  struct Operandos * cociente_1_svc(struct Operandos *, struct svc_req *);
 extern int operaciones_prog_1_freeresult (SVCXPRT *, xdrproc_t, caddr_t);
 
 #else /* K&R C */
 #define SUMA 1
-extern  double * suma_1();
-extern  double * suma_1_svc();
+extern  struct Operandos * suma_1();
+extern  struct Operandos * suma_1_svc();
 #define PRODUCTO 2
-extern  double * producto_1();
-extern  double * producto_1_svc();
+extern  struct Operandos * producto_1();
+extern  struct Operandos * producto_1_svc();
 #define COCIENTE 3
-extern  double * cociente_1();
-extern  double * cociente_1_svc();
+extern  struct Operandos * cociente_1();
+extern  struct Operandos * cociente_1_svc();
 extern int operaciones_prog_1_freeresult ();
 #endif /* K&R C */
 

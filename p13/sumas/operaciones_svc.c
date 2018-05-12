@@ -35,19 +35,19 @@ operaciones_prog_1(struct svc_req *rqstp, register SVCXPRT *transp)
 
 	case SUMA:
 		_xdr_argument = (xdrproc_t) xdr_Operandos;
-		_xdr_result = (xdrproc_t) xdr_double;
+		_xdr_result = (xdrproc_t) xdr_Operandos;
 		local = (char *(*)(char *, struct svc_req *)) suma_1_svc;
 		break;
 
 	case PRODUCTO:
 		_xdr_argument = (xdrproc_t) xdr_Operandos;
-		_xdr_result = (xdrproc_t) xdr_double;
+		_xdr_result = (xdrproc_t) xdr_Operandos;
 		local = (char *(*)(char *, struct svc_req *)) producto_1_svc;
 		break;
 
 	case COCIENTE:
 		_xdr_argument = (xdrproc_t) xdr_Operandos;
-		_xdr_result = (xdrproc_t) xdr_double;
+		_xdr_result = (xdrproc_t) xdr_Operandos;
 		local = (char *(*)(char *, struct svc_req *)) cociente_1_svc;
 		break;
 

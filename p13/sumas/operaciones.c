@@ -1,12 +1,13 @@
 #include "operaciones.h"
 
-double suma(struct Operandos o) {
+struct Operandos suma(struct Operandos o) {
     return o.i + o.j;
 }
-double producto(struct Operandos o) {
+
+struct Operandos producto(struct Operandos o) {
     return o.i * o.j;
 }
 
-double cociente(struct Operandos o) {
+struct Operandos cociente(struct Operandos o) {
     return o.i / (float) o.j;
 }

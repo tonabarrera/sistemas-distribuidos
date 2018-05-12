@@ -6,38 +6,45 @@
 
 #include "operaciones.h"
 
-double *
+struct Operandos *
 suma_1_svc(struct Operandos *argp, struct svc_req *rqstp)
 {
-	static double  result;
+	static struct Operandos  result;
 
 	/*
 	 * insert server code here
 	 */
-	result = argp->i + argp->j;
+	printf("%s\n", "suma_1_svc");
+	result.res = argp->i + argp->j;
+
 	return &result;
 }
 
-double *
+struct Operandos *
 producto_1_svc(struct Operandos *argp, struct svc_req *rqstp)
 {
-	static double  result;
+	static struct Operandos  result;
 
 	/*
 	 * insert server code here
 	 */
-	result = argp->i * argp->j;
+	printf("%s\n", "producto_1_svc");
+
+	result.res = argp->i * argp->j;
+
 	return &result;
 }
 
-double *
+struct Operandos *
 cociente_1_svc(struct Operandos *argp, struct svc_req *rqstp)
 {
-	static double  result;
+	static struct Operandos  result;
 
 	/*
 	 * insert server code here
 	 */
-	result = argp->i / (double) argp->j;
+	printf("%s\n", "cociente_1_svc");
+	result.res = argp->i /(double) argp->j;
+
 	return &result;
 }

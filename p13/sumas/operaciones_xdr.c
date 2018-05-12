@@ -14,5 +14,7 @@ xdr_Operandos (XDR *xdrs, Operandos *objp)
 		 return FALSE;
 	 if (!xdr_int (xdrs, &objp->j))
 		 return FALSE;
+	 if (!xdr_double (xdrs, &objp->res))
+		 return FALSE;
 	return TRUE;
 }

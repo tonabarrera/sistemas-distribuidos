@@ -8,14 +8,14 @@
 
 
 void
-operaciones_prog_1(char *host, int i, int j)
+operaciones_prog_1(char *host, int a, int b)
 {
 	CLIENT *clnt;
-	double  *result_1;
+	struct Operandos  *result_1;
 	struct Operandos  suma_1_arg;
-	double  *result_2;
+	struct Operandos  *result_2;
 	struct Operandos  producto_1_arg;
-	double  *result_3;
+	struct Operandos  *result_3;
 	struct Operandos  cociente_1_arg;
 
 #ifndef	DEBUG
@@ -25,27 +25,30 @@ operaciones_prog_1(char *host, int i, int j)
 		exit (1);
 	}
 #endif	/* DEBUG */
-	suma_1_arg.i = i;
-	suma_1_arg.j = j;
+
+	suma_1_arg.i = a;
+	suma_1_arg.j = b;
+
 	producto_1_arg = suma_1_arg;
 	cociente_1_arg = suma_1_arg;
 
 	result_1 = suma_1(&suma_1_arg, clnt);
-	if (result_1 == (double *) NULL) {
+	if (result_1 == (struct Operandos *) NULL) {
 		clnt_perror (clnt, "call failed");
 	}
 	result_2 = producto_1(&producto_1_arg, clnt);
-	if (result_2 == (double *) NULL) {
+	if (result_2 == (struct Operandos *) NULL) {
 		clnt_perror (clnt, "call failed");
 	}
 	result_3 = cociente_1(&cociente_1_arg, clnt);
-	if (result_3 == (double *) NULL) {
+	if (result_3 == (struct Operandos *) NULL) {
 		clnt_perror (clnt, "call failed");
 	}
 
-	printf("%d + %d = %f\n", suma_1_arg.i, suma_1_arg.j, *result_1);
-	printf("%d * %d = %f\n", suma_1_arg.i, suma_1_arg.j, *result_2);
-	printf("%d / %d = %f\n", suma_1_arg.i, suma_1_arg.j, *result_3);
+	printf("%d + %d = %f\n", suma_1_arg.i, suma_1_arg.j, result_1->res);
+	printf("%d * %d = %f\n", suma_1_arg.i, suma_1_arg.j, result_2->res);
+	printf("%d / %d = %f\n", suma_1_arg.i, suma_1_arg.j, result_3->res);
+
 #ifndef	DEBUG
 	clnt_destroy (clnt);
 #endif	 /* DEBUG */
@@ -57,7 +60,7 @@ main (int argc, char *argv[])
 {
 	char *host;
 
-	if (argc < 4) {
+	if (argc < 2) {
 		printf ("usage: %s server_host num1 num2\n", argv[0]);
 		exit (1);
 	}

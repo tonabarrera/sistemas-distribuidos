@@ -6,13 +6,13 @@ int main(int argc, char const *argv[]) {
 	int n = 11;
 	mitad=(int)n/2;
    	inicio=2;
-   	num1[0]=n;
-   	num1[1]=inicio;
-   	num1[2]=mitad;
+    num1[0]=n;
+    num1[1]=inicio;
+    num1[2]=mitad;
 
-	num2[0] = n;
-	num2[1] = mitad;
-	num2[2] = n-1;
+    num2[0] = n;
+    num2[1] = mitad;
+    num2[2] = n-1;
 
     printf("%s\n", "CLIENTE");
     SocketDatagrama cliente(6666);
