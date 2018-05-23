@@ -6,10 +6,11 @@ Respuesta::Respuesta(int pl){
 }
 
 void Respuesta::sendReply(char *respuesta, char *ipCliente, int puertoCliente){
+    size_t tam = 4*sizeof(int) + 16*sizeof(char) + strlen(respuesta);
     struct mensaje *msj = (struct mensaje *) malloc(sizeof(struct mensaje));
     memcpy(msj->arguments, respuesta, strlen(respuesta));
     msj->messageType = 1;
-    PaqueteDatagrama p((char *)msj, sizeof(struct mensaje), ipCliente, puertoCliente);
+    PaqueteDatagrama p((char *)msj, tam, ipCliente, puertoCliente);
     socketlocal->envia(p);
 }
 
