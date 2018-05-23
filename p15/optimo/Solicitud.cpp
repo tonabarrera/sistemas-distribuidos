@@ -8,6 +8,7 @@ Solicitud::Solicitud() {
 
 char * Solicitud::doOperation(char *IP, int puerto, int operationId, char *arguments) {
     struct mensaje *msj = (struct mensaje *) malloc(sizeof(mensaje));
+    size_t tam = 4*sizeof(int) + 16*sizeof(char) + strlen(arguments);
     msj->messageType = 0;
     msj->requestId = 1;
     memcpy(msj->IP, IP, strlen(IP));
@@ -15,7 +16,7 @@ char * Solicitud::doOperation(char *IP, int puerto, int operationId, char *argum
     msj->operationId = operationId;
     memcpy(msj->arguments, arguments, strlen(arguments));
 
-    PaqueteDatagrama paquete(sizeof(mensaje));
+    PaqueteDatagrama paquete(tam);
     paquete.inicializaIp(IP);
     paquete.inicializaPuerto(puerto);
     paquete.inicializaDatos((char *)msj);

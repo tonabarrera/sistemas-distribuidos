@@ -1,0 +1,14 @@
+run: cliente
+	./cliente 127.0.0.1 7200
+cliente: cliente.o PaqueteDatagrama.o SocketDatagrama.o Solicitud.o
+	g++ SocketDatagrama.o Solicitud.o PaqueteDatagrama.o cliente.o -o cliente
+cliente.o: cliente.cpp
+	g++ -Wall -c cliente.cpp
+PaqueteDatagrama.o: PaqueteDatagrama.cpp
+	g++ -Wall -c PaqueteDatagrama.cpp
+SocketDatagrama.o:SocketDatagrama.cpp 
+	g++ -Wall -c SocketDatagrama.cpp
+Solicitud.o: Solicitud.cpp
+	gcc -Wall -c Solicitud.cpp
+clean:
+	rm *.o *.out ./cliente

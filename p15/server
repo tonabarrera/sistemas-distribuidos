@@ -1,0 +1,14 @@
+run: Servidor
+	./Servidor
+Servidor: Servidor.o PaqueteDatagrama.o SocketDatagrama.o Respuesta.o
+	g++ SocketDatagrama.o Respuesta.o PaqueteDatagrama.o Servidor.o -o Servidor
+Servidor.o: Servidor.cpp
+	g++ -Wall -c Servidor.cpp
+PaqueteDatagrama.o: PaqueteDatagrama.cpp
+	g++ -Wall -c PaqueteDatagrama.cpp
+SocketDatagrama.o:SocketDatagrama.cpp 
+	g++ -Wall -c SocketDatagrama.cpp
+Respuesta.o: Respuesta.cpp
+	gcc -Wall -c Respuesta.cpp
+clean:
+	rm *.o *.out ./Servidor

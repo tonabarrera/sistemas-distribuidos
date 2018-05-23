@@ -149,7 +149,7 @@ int main(int argc, char const *argv[]) {
     lista_final.resize(500);
     i = 1;
     for (it = lista_final.begin(); it != lista_final.end(); it++)
-        cout << i++ << ".- " << it->palabra << endl;
+        cout << i++ << ".- " << it->palabra << " " << it->frecuencia << endl;
     
     return 0;
 }
