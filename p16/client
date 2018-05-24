@@ -1,5 +1,5 @@
 run: cliente
-	./cliente 10.100.73.243 10
+	./cliente 127.0.0.1 150000
 cliente: cliente.o PaqueteDatagrama.o SocketDatagrama.o Solicitud.o 
 	g++ SocketDatagrama.o Solicitud.o PaqueteDatagrama.o cliente.o -o cliente
 cliente.o: cliente.cpp

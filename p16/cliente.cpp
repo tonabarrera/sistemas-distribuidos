@@ -20,8 +20,8 @@ int main(int argc, char *argv[]){
         printf("el saldo es: %i\n",saldo);
         nsaldo=atoi(cliente.doOperation(argv[1], 7200,deposito, cadena));
         if(nsaldo!=saldo+1){
-			printf("Error: El saldo recibido  no corresponde\n");
-			exit(0);
+            printf("Error: El saldo recibido  no corresponde\n");
+            exit(0);
         }
         printf("el saldo es: %i\n",nsaldo);
         

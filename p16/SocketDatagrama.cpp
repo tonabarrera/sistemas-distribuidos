@@ -10,7 +10,6 @@ SocketDatagrama::SocketDatagrama(int puerto) {
 }
 
 SocketDatagrama::~SocketDatagrama() {
-    printf("%s\n", "Se CERRO");
     close(s);
 }
 
