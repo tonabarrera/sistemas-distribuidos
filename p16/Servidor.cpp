@@ -2,11 +2,9 @@
 #include "Mensaje.h"
 #include "Respuesta.hpp"
 #include <cstdio>
-#include <vector>
 #include <cstring>
-#include <iostream>
 #include <string>
-using namespace std;
+#include <cstdlib>
 
 int main(int argc, char*argv[])
 {
@@ -14,7 +12,7 @@ int main(int argc, char*argv[])
     Respuesta respuesta(7200);
     struct mensaje *msg;
     string nbdstring;
-
+    
     while(true) {
         printf("%s\n", "ESPERANDO...");
         msg = respuesta.getRequest();
@@ -22,9 +20,9 @@ int main(int argc, char*argv[])
             printf("%s\n", "Operacion 1");
             nbdstring = to_string(nbd);
             respuesta.sendReply((char *)nbdstring.c_str(), msg->IP, msg->puerto);
-        }else if(msg->operationId == 2){
+        } else if(msg->operationId == 2){
             printf("%s\n", "Operacion 2");
-            nbd++;
+            nbd+=atoi(msg->arguments);
             nbdstring = to_string(nbd);
             respuesta.sendReply((char *)nbdstring.c_str(), msg->IP, msg->puerto);
         }

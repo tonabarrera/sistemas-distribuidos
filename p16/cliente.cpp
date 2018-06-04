@@ -13,17 +13,17 @@ int main(int argc, char *argv[]){
     int deposito=2;
     int saldo=0;
     int nsaldo=0;
-    char cadena[]="Que pedooo\n";
+    char cadena[]="1\n";
     auto start = high_resolution_clock::now();
     for(int i = 0; i < atoi(argv[2]); i++){
         saldo=atoi(cliente.doOperation(argv[1], 7200,consulta, cadena));
-        printf("el saldo es: %i\n",saldo);
+        printf("Esta es una lectura, saldo: %i\n",saldo);
         nsaldo=atoi(cliente.doOperation(argv[1], 7200,deposito, cadena));
         if(nsaldo!=saldo+1){
-            printf("Error: El saldo recibido  no corresponde\n");
-            exit(0);
+			printf("Error: El saldo recibido  no corresponde, esperado: %i, obtenido: %i\n",saldo+1,nsaldo);
+			exit(0);
         }
-        printf("el saldo es: %i\n",nsaldo);
+        printf("Este es una escritura, saldo: %i\n",nsaldo);
         
     }
     auto stop = high_resolution_clock::now();

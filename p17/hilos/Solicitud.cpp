@@ -4,31 +4,26 @@
 
 Solicitud::Solicitud() {
     socketlocal = new SocketDatagrama(0);
-    peticion = 0;
 }
 
 char * Solicitud::doOperation(char *IP, int puerto, int operationId, char *arguments) {
-    struct mensaje *msj = (struct mensaje *) malloc(sizeof(struct mensaje));
-    //size_t tam = 4*sizeof(int) + 16*sizeof(char) + strlen(arguments);
+    struct mensaje *msj = (struct mensaje *) malloc(sizeof(mensaje));
+    size_t tam = 4*sizeof(int) + 16*sizeof(char) + strlen(arguments);
     msj->messageType = 0;
-    msj->requestId = peticion++;
+    msj->requestId = 1;
     memcpy(msj->IP, IP, strlen(IP));
     msj->puerto = puerto;
     msj->operationId = operationId;
     memcpy(msj->arguments, arguments, strlen(arguments));
 
-    PaqueteDatagrama paquete(sizeof(struct mensaje));
+    PaqueteDatagrama paquete(tam);
     paquete.inicializaIp(IP);
     paquete.inicializaPuerto(puerto);
     paquete.inicializaDatos((char *)msj);
+    socketlocal->envia(paquete);
 
     PaqueteDatagrama respuesta(sizeof(struct mensaje));
-    short contador = 0;
-    while (socketlocal->recibeTimeout(respuesta, 2, 500000) == -1 && contador < 7) {
-        contador++;
-        socketlocal->envia(paquete);
-        printf("%s\n", "Tiempo de recepción transcurrido");
-    }
+    socketlocal->recibe(respuesta);
 
     struct mensaje *msj_respuesta = (struct mensaje *) malloc(sizeof(mensaje));
 
