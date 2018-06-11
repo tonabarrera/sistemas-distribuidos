@@ -1,0 +1,16 @@
+run: servidor
+	./servidor
+servidor: servidor.o PaqueteDatagrama.o SocketDatagrama.o Respuesta.o gfxModified.o
+	g++ -std=c++11 gfxModified.o SocketDatagrama.o Respuesta.o PaqueteDatagrama.o servidor.o -o servidor -lX11
+servidor.o: servidor.cpp
+	g++ -std=c++11 -Wall -c servidor.cpp
+PaqueteDatagrama.o: PaqueteDatagrama.cpp
+	g++ -Wall -c PaqueteDatagrama.cpp
+SocketDatagrama.o:SocketDatagrama.cpp 
+	g++ -Wall -c SocketDatagrama.cpp
+Respuesta.o: Respuesta.cpp
+	gcc -Wall -c Respuesta.cpp
+gfxModified.o: gfxModified.c
+	gcc gfxModified.c -c
+clean:
+	rm *.o *.out ./servidor

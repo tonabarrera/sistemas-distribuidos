@@ -17,11 +17,13 @@ using namespace std;
 
 int main() {
     struct timeval tiempo;
+    time_t auxiliar;
+    struct tm *timeinfo;
     gfx_open(ANCHURA, ALTURA, "Ejemplo gfx_display_ascii");
     char valor[12] = {42};
     int pre_dec = 0;
-    int hour, min, sec, dec_sec;
-    while(1) {
+    int dec_sec;
+    while(true) {
         gfx_color(87,1,2);
         
         gettimeofday(&tiempo, NULL);
@@ -34,6 +36,14 @@ int main() {
             gfx_clear();
             pre_dec = dec_sec;
         }
+        auxiliar = tiempo.tv_sec;
+        timeinfo = localtime(&auxiliar);
+        strftime(valor, 12, "%H:%M:%S", timeinfo);
+
+        string valor2 = to_string(dec_sec);
+        // decima de segundos
+        gfx_display_ascii(610, 20, 10 , valor2.c_str()[0]);
+        gfx_display_ascii(690, 20, 10 , valor2.c_str()[1]);
 
         // segundos
         gfx_display_ascii(410, 20, 10 , valor[6]);

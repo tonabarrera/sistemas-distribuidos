@@ -21,7 +21,8 @@ int main(int argc, char*argv[])
             nbdstring = to_string(nbd);
             respuesta.sendReply((char *)nbdstring.c_str(), msg->IP, msg->puerto);
         } else if(msg->operationId == 2){
-            printf("%s\n", "Operacion 2");
+            printf("%s\n", "Operacion 2")printf("%s\n", "ESPERANDO...");
+        msg = respuesta.getRequest();;
             nbd+=atoi(msg->arguments);
             nbdstring = to_string(nbd);
             respuesta.sendReply((char *)nbdstring.c_str(), msg->IP, msg->puerto);
