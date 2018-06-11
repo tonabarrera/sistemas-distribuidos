@@ -3,9 +3,15 @@
 SocketMulticast::SocketMulticast() {
     s = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if (s == -1){
-        perror("SocketMulticast()");
+        perror("SocketMulticast()->socket()");
         exit(EXIT_FAILURE);
     }
+    /* PARTE 3
+    int reuse = 1;
+    if (setsockopt(s, SOL_SOCKET, SO_REUSEPORT, &reuse, sizeof(reuse)) == -1) {
+        perror("SocketMulticast()->setsockopt\n");
+        exit(EXIT_FAILURE);
+    }*/
 }
 
 SocketMulticast::~SocketMulticast() {
